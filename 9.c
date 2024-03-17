@@ -113,5 +113,5 @@ int main() {
     h3 = addpoly(h1, h2, h3);
     printf("resultant polynomial is\n");
     printpoly(h3);
-    evaluate(h1);
+    evaluate(h3);
 }
