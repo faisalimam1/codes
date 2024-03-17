@@ -1,90 +1,76 @@
-//stack operstions
+//infix to postfix
 
 #include <stdio.h>
 #include <stdlib.h>
-
-int* stack, max, top = -1;
-
-void push(int ele) {
-    if (top == max - 1)
-        printf("Stack overflow");
-    else
-        stack[++top] = ele;
+#include <string.h>
+char STACK[20];
+int top = -1;
+void push(char sign) {
+    STACK[++top] = sign;
 }
-
-int pop() {
-    if (top == -1) {
-        printf("Stack underflow");
-        return -1;
-    } else
-        return (stack[top--]);
+char pop() {
+    return (STACK[top--]);
 }
-
-void display() {
-    int i;
-    if (top == -1)
-        printf("Stack is empty");
-    else {
-        printf("Stack elements are ");
-        for (i = top; i >= 0; i--) {
-            printf("%d\t", stack[i]);
-        }
+int prec(char sym) {
+    switch (sym) {
+    case '^':
+    case '$':
+        return 4;
+    case '%':
+    case '/':
+    case '*':
+        return 3;
+    case '+':
+    case '-':
+        return 2;
+    case '(':
+    case ')':
+    case '#':
+        return 1;
+    default:
+        return 0;
     }
 }
-
-void palindrome() {
-    int num, rev, rem, ncopy;
-    printf("Enter the value of the num: ");
-    scanf("%d", &num);
-    ncopy = num;
-    top = -1;
-    while (num != 0) {
-        rem = num % 10;
-        push(rem);
-        num = num / 10;
-    }
-    while (ncopy != 0) {
-        rem = ncopy % 10;
-        if (rem != pop()) {
-            printf("Given number is not a palindrome");
-            top = -1;
-            return;
-        }
-        ncopy / 10;
-    }
-    printf("It is a palindrome");
-}
-
-int main() {
-    int choice, ele;
-    printf("Enter the size of stack: ");
-    scanf("%d", &max);
-    stack = (int*)malloc(max * sizeof(int));
-    while (1) {
-        printf("\nEnter your choice\n");
-        printf("1: Push\n2: Pop\n3: Display\n4: Palindrome\n5: Exit \n");
-        scanf("%d", &choice);
-        switch (choice) {
-        case 1:
-            printf("Enter the element to be pushed: ");
-            scanf("%d", &ele);
-            push(ele);
+void convertin(char infix[], char postfix[]) {
+    char symbol;
+    int i = 0;
+    int j = 0;
+    push('#');
+    for (i = 0; i < strlen(infix); i++) {
+        symbol = infix[i];
+        switch (symbol) {
+        case '(':
+            push(symbol);
             break;
-        case 2:
-            ele = pop();
-            if (ele != -1)
-                printf("Deleted element is %d\n", ele);
+        case ')':
+            while (STACK[top] != 'c')
+                postfix[j++] = pop();
+            pop();
             break;
-        case 3:
-            display();
+        case '^':
+        case '$':
+        case '%':
+        case '/':
+        case '*':
+        case '+':
+        case '-':
+            while (prec(symbol) <= prec(STACK[top])) {
+                postfix[j++] = pop();
+                push(symbol);
+            }
             break;
-        case 4:
-            palindrome();
-            break;
-        case 5:
-            exit(0);
         default:
-            printf("Invalid Input");
+            postfix[j++] = symbol;
+            while (STACK[top] != '#')
+                postfix[j++] = pop();
+            postfix[j++] = '\0';
         }
     }
+}
+void main() {
+    char infix[30], postfix[30];
+    printf("Enter INFIX: ");
+    gets(infix);
+    convertin(infix, postfix);
+    printf("POSTFIX: %s\n", postfix);
 }
