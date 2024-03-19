@@ -43,7 +43,7 @@ void convertin(char infix[], char postfix[]) {
             push(symbol);
             break;
         case ')':
-            while (STACK[top] != 'c')
+            while (STACK[top] != '(')
                 postfix[j++] = pop();
             pop();
             break;
