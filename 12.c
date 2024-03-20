@@ -1,4 +1,3 @@
-//hashing
 
 // Hash Table contents
 
@@ -19,7 +18,7 @@ void display() {
 
 void linear_probing(int key, int index) {
     int i;
-    if (a[index] == 1) {
+    if (a[index] == - 1) {
         a[index] = key;
         return;
     }
